@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Etiqueta WMS</title>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js">
+  </script>
+
+  <style>
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #eee;
+    }
+
+    .etiqueta {
+      width: 400px;
+      max-width: 100%;
+      background: white;
+      margin: auto;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,.15);
+    }
+
+    .empresa {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .pallet {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .barcode {
+      width: 100%;
+    }
+
+    .info {
+      margin-top: 15px;
+      font-size: 15px;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="etiqueta">
+
+    <div class="empresa">
+      SABOR DE FRANCE
+    </div>
+
+    <div class="pallet">
+      PL000004
+    </div>
+
+    <svg
+      id="barcode"
+      class="barcode"
+    ></svg>
+
+    <div class="info">
+
+      <strong>Produto:</strong>
+      Baguette
+      <br>
+
+      <strong>SKU:</strong>
+      1001
+      <br>
+
+      <strong>Lote:</strong>
+      20260808A
+      <br>
+
+      <strong>Quantidade:</strong>
+      64 UN
+      <br>
+
+      <strong>Peso:</strong>
+      17,92 kg
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    JsBarcode(
+      "#barcode",
+      "PL000004",
+      {
+        format: "CODE128",
+        displayValue: true,
+        fontSize: 22,
+        height: 90,
+        margin: 10
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>WMS Scanner</title>
+
+  <script
+    src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
+  </script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        sans-serif;
+
+      background:
+        #f4f6f8;
+
+      color:
+        #1f2937;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      padding:
+        20px;
+
+    }
+
+
+    .app {
+
+      width:
+        100%;
+
+      max-width:
+        520px;
+
+      background:
+        white;
+
+      border-radius:
+        18px;
+
+      padding:
+        22px;
+
+      box-shadow:
+        0 10px 30px
+        rgba(0,0,0,0.12);
+
+    }
+
+
+    .title {
+
+      font-size:
+        24px;
+
+      font-weight:
+        bold;
+
+      margin-bottom:
+        6px;
+
+    }
+
+
+    .description {
+
+      color:
+        #6b7280;
+
+      margin-bottom:
+        20px;
+
+    }
+
+
+    #reader {
+
+      width:
+        100%;
+
+      min-height:
+        300px;
+
+      border-radius:
+        14px;
+
+      overflow:
+        hidden;
+
+      background:
+        #111827;
+
+    }
+
+
+    .status {
+
+      margin-top:
+        14px;
+
+      padding:
+        12px;
+
+      border-radius:
+        10px;
+
+      background:
+        #f3f4f6;
+
+      text-align:
+        center;
+
+      font-size:
+        14px;
+
+    }
+
+
+    .result {
+
+      margin-top:
+        15px;
+
+      padding:
+        14px;
+
+      border-radius:
+        10px;
+
+      background:
+        #ecfdf5;
+
+      font-size:
+        18px;
+
+      font-weight:
+        bold;
+
+      word-break:
+        break-all;
+
+    }
+
+
+    .button {
+
+      width:
+        100%;
+
+      height:
+        52px;
+
+      margin-top:
+        14px;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      background:
+        #2563eb;
+
+      color:
+        white;
+
+      font-size:
+        16px;
+
+      font-weight:
+        bold;
+
+      cursor:
+        pointer;
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="app">
+
+
+    <div class="title">
+      WMS Scanner
+    </div>
+
+
+    <div class="description">
+      Aponte a câmera para o código de barras do pallet.
+    </div>
+
+
+    <div id="reader"></div>
+
+
+    <div
+      id="status"
+      class="status"
+    >
+      Iniciando câmera...
+    </div>
+
+
+    <div
+      id="resultado"
+      class="result"
+      style="display:none"
+    ></div>
+
+
+    <button
+      class="button"
+      onclick="iniciarScanner()"
+    >
+      INICIAR CÂMERA
+    </button>
+
+
+  </div>
+
+
+  <script>
+
+    let scanner = null;
+
+
+    function iniciarScanner() {
+
+      const status =
+        document.getElementById(
+          "status"
+        );
+
+
+      status.textContent =
+        "Solicitando acesso à câmera...";
+
+
+      if (
+        scanner
+      ) {
+
+        try {
+
+          scanner.clear();
+
+        } catch (erro) {}
+
+      }
+
+
+      scanner =
+        new Html5Qrcode(
+          "reader"
+        );
+
+
+      const config = {
+
+        fps: 10,
+
+        qrbox: {
+          width: 300,
+          height: 120
+        },
+
+        formatsToSupport: [
+
+          Html5QrcodeSupportedFormats
+            .CODE_128
+
+        ]
+
+      };
+
+
+      scanner
+        .start(
+
+          {
+            facingMode:
+              "environment"
+          },
+
+          config,
+
+          function(
+            decodedText
+          ) {
+
+            console.log(
+              "Código:",
+              decodedText
+            );
+
+
+            document
+              .getElementById(
+                "resultado"
+              )
+              .style.display =
+              "block";
+
+
+            document
+              .getElementById(
+                "resultado"
+              )
+              .textContent =
+              decodedText;
+
+
+            status.textContent =
+              "Código identificado!";
+
+
+            pararScanner();
+
+          },
+
+          function(
+            errorMessage
+          ) {
+
+            // Erros de tentativa
+            // são normais durante a leitura.
+
+          }
+
+        )
+
+        .then(
+          function() {
+
+            status.textContent =
+              "Aponte a câmera para o código.";
+
+          }
+        )
+
+        .catch(
+          function(erro) {
+
+            console.error(
+              erro
+            );
+
+
+            status.textContent =
+              "Erro ao acessar a câmera: " +
+              erro;
+
+          }
+        );
+
+    }
+
+
+    function pararScanner() {
+
+      if (!scanner) {
+
+        return;
+
+      }
+
+
+      scanner
+
+        .stop()
+
+        .then(
+          function() {
+
+            try {
+
+              scanner.clear();
+
+            } catch (erro) {}
+
+          }
+        )
+
+        .catch(
+          function(erro) {
+
+            console.log(
+              erro
+            );
+
+          }
+        );
+
+    }
+
+
+    iniciarScanner();
+
+  </script>
+
+
+</body>
+
+</html>

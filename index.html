@@ -16,195 +16,91 @@
     src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
   </script>
 
-
   <style>
 
     * {
       box-sizing: border-box;
     }
 
-
     body {
-
       margin: 0;
-
       min-height: 100vh;
-
-      font-family:
-        Arial,
-        sans-serif;
-
-      background:
-        #f4f6f8;
-
-      color:
-        #1f2937;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      padding:
-        20px;
-
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-
 
     .app {
-
-      width:
-        100%;
-
-      max-width:
-        520px;
-
-      background:
-        white;
-
-      border-radius:
-        18px;
-
-      padding:
-        22px;
-
-      box-shadow:
-        0 10px 30px
-        rgba(0,0,0,0.12);
-
+      width: 100%;
+      max-width: 520px;
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
     }
-
 
     .title {
-
-      font-size:
-        24px;
-
-      font-weight:
-        bold;
-
-      margin-bottom:
-        6px;
-
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 6px;
     }
-
 
     .description {
-
-      color:
-        #6b7280;
-
-      margin-bottom:
-        20px;
-
+      color: #6b7280;
+      margin-bottom: 20px;
     }
-
 
     #reader {
-
-      width:
-        100%;
-
-      min-height:
-        300px;
-
-      border-radius:
-        14px;
-
-      overflow:
-        hidden;
-
-      background:
-        #111827;
-
+      width: 100%;
+      min-height: 300px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #111827;
     }
 
+    #reader video {
+      width: 100% !important;
+      height: auto !important;
+    }
 
     .status {
-
-      margin-top:
-        14px;
-
-      padding:
-        12px;
-
-      border-radius:
-        10px;
-
-      background:
-        #f3f4f6;
-
-      text-align:
-        center;
-
-      font-size:
-        14px;
-
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      text-align: center;
+      font-size: 14px;
     }
-
 
     .result {
-
-      margin-top:
-        15px;
-
-      padding:
-        14px;
-
-      border-radius:
-        10px;
-
-      background:
-        #ecfdf5;
-
-      font-size:
-        18px;
-
-      font-weight:
-        bold;
-
-      word-break:
-        break-all;
-
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #ecfdf5;
+      font-size: 18px;
+      font-weight: bold;
+      word-break: break-all;
     }
 
-
     .button {
+      width: 100%;
+      height: 52px;
+      margin-top: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-      width:
-        100%;
-
-      height:
-        52px;
-
-      margin-top:
-        14px;
-
-      border:
-        none;
-
-      border-radius:
-        12px;
-
-      background:
-        #2563eb;
-
-      color:
-        white;
-
-      font-size:
-        16px;
-
-      font-weight:
-        bold;
-
-      cursor:
-        pointer;
-
+    .button:active {
+      transform: scale(0.99);
     }
 
   </style>
@@ -214,30 +110,24 @@
 
 <body>
 
-
   <div class="app">
-
 
     <div class="title">
       WMS Scanner
     </div>
 
-
     <div class="description">
       Aponte a câmera para o código de barras do pallet.
     </div>
 
-
     <div id="reader"></div>
-
 
     <div
       id="status"
       class="status"
     >
-      Iniciando câmera...
+      Preparando scanner...
     </div>
-
 
     <div
       id="resultado"
@@ -245,339 +135,434 @@
       style="display:none"
     ></div>
 
-
     <button
+      id="cameraButton"
       class="button"
+      type="button"
       onclick="iniciarScanner()"
     >
       INICIAR CÂMERA
     </button>
-
 
   </div>
 
 
   <script>
 
+    // ==========================================================
+    // VARIÁVEIS
+    // ==========================================================
+
     let scanner = null;
 
     let targetOrigin = null;
 
+    let scannerIniciado = false;
 
-  // ==========================================================
-  // LÊ CONFIGURAÇÃO ENVIADA PELO WMS
-  // ==========================================================
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
+    let codigoJaEnviado = false;
 
 
-  targetOrigin =
-    params.get(
-      "targetOrigin"
-    );
+    // ==========================================================
+    // LÊ O TARGET ORIGIN ENVIADO PELO WMS
+    // ==========================================================
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
 
-  // ==========================================================
-  // VALIDA ORIGEM
-  // ==========================================================
+    targetOrigin =
+      params.get(
+        "targetOrigin"
+      );
 
-  function origemValida() {
 
-    if (!targetOrigin) {
+    // ==========================================================
+    // VALIDAR ORIGEM DO WMS
+    // ==========================================================
 
-      return false;
+    function origemValida() {
+
+      if (!targetOrigin) {
+        return false;
+      }
+
+
+      return (
+        targetOrigin ===
+          "https://script.google.com"
+        ||
+        targetOrigin ===
+          "https://script.googleusercontent.com"
+      );
 
     }
 
 
-    return (
-      targetOrigin ===
-      "https://script.google.com"
-      ||
+    // ==========================================================
+    // MOSTRAR STATUS
+    // ==========================================================
 
-      targetOrigin ===
-      "https://script.googleusercontent.com"
-    );
-
-  }
-
-
-  // ==========================================================
-  // INICIAR SCANNER
-  // ==========================================================
-
-  function iniciarScanner() {
-
-    const status =
-      document.getElementById(
-        "status"
-      );
-
-
-    if (
-      !origemValida()
-    ) {
-
-      status.textContent =
-        "Origem do WMS não identificada.";
-
-      return;
-
-    }
-
-
-    status.textContent =
-      "Solicitando acesso à câmera...";
-
-
-    if (scanner) {
-
-      try {
-
-        scanner.clear();
-
-      } catch (erro) {}
-
-    }
-
-
-    scanner =
-      new Html5Qrcode(
-        "reader"
-      );
-
-
-    const config = {
-
-      fps: 10,
-
-      qrbox: {
-        width: 300,
-        height: 120
-      },
-
-      formatsToSupport: [
-
-        Html5QrcodeSupportedFormats
-          .CODE_128
-
-      ]
-
-    };
-
-
-    scanner
-      .start(
-
-        {
-          facingMode:
-            "environment"
-        },
-
-        config,
-
-        function(
-          decodedText
-        ) {
-
-          const codigo =
-            String(
-              decodedText
-            )
-            .trim()
-            .toUpperCase();
-
-
-          console.log(
-            "Código detectado:",
-            codigo
-          );
-
-
-          document
-            .getElementById(
-              "resultado"
-            )
-            .style.display =
-            "block";
-
-
-          document
-            .getElementById(
-              "resultado"
-            )
-            .textContent =
-            codigo;
-
-
-          status.textContent =
-            "Código identificado!";
-
-
-          enviarCodigoParaWMS(
-            codigo
-          );
-
-        },
-
-        function(
-          errorMessage
-        ) {
-
-          // Falhas de leitura enquanto
-          // a câmera procura o código
-          // são normais.
-
-        }
-
-      )
-
-      .then(
-        function() {
-
-          status.textContent =
-            "Aponte a câmera para o código.";
-
-        }
-      )
-
-      .catch(
-        function(
-          erro
-        ) {
-
-          console.error(
-            erro
-          );
-
-
-          status.textContent =
-            "Erro ao acessar a câmera: " +
-            erro;
-
-        }
-      );
-
-  }
-
-
-  // ==========================================================
-  // ENVIAR CÓDIGO PARA O WMS
-  // ==========================================================
-
-  function enviarCodigoParaWMS(
-    codigo
-  ) {
-
-    if (
-      !window.opener
+    function atualizarStatus(
+      mensagem
     ) {
 
       document
+        .getElementById("status")
+        .textContent =
+        mensagem;
+
+    }
+
+
+    // ==========================================================
+    // INICIAR SCANNER
+    // ==========================================================
+
+    function iniciarScanner() {
+
+      if (scannerIniciado) {
+        return;
+      }
+
+
+      if (!origemValida()) {
+
+        atualizarStatus(
+          "Origem do WMS não identificada."
+        );
+
+        console.error(
+          "targetOrigin:",
+          targetOrigin
+        );
+
+        return;
+
+      }
+
+
+      atualizarStatus(
+        "Solicitando acesso à câmera..."
+      );
+
+
+      const reader =
+        document.getElementById(
+          "reader"
+        );
+
+
+      reader.innerHTML = "";
+
+
+      scanner =
+        new Html5Qrcode(
+          "reader"
+        );
+
+
+      const config = {
+
+        fps: 10,
+
+        qrbox: {
+          width: 300,
+          height: 120
+        },
+
+        formatsToSupport: [
+
+          Html5QrcodeSupportedFormats.CODE_128
+
+        ]
+
+      };
+
+
+      scanner
+        .start(
+
+          {
+            facingMode: "environment"
+          },
+
+          config,
+
+          function(
+            decodedText
+          ) {
+
+            processarCodigo(
+              decodedText
+            );
+
+          },
+
+          function(
+            errorMessage
+          ) {
+
+            // Não exibe os erros de leitura
+            // enquanto a câmera está procurando.
+
+          }
+
+        )
+
+        .then(
+          function() {
+
+            scannerIniciado = true;
+
+            atualizarStatus(
+              "Aponte a câmera para o código."
+            );
+
+          }
+        )
+
+        .catch(
+          function(
+            erro
+          ) {
+
+            scannerIniciado = false;
+
+            console.error(
+              "Erro ao iniciar câmera:",
+              erro
+            );
+
+            atualizarStatus(
+              "Erro ao acessar a câmera."
+            );
+
+          }
+        );
+
+    }
+
+
+    // ==========================================================
+    // PROCESSAR CÓDIGO
+    // ==========================================================
+
+    function processarCodigo(
+      codigo
+    ) {
+
+      if (codigoJaEnviado) {
+        return;
+      }
+
+
+      codigo =
+        String(codigo)
+          .trim()
+          .toUpperCase();
+
+
+      if (!codigo) {
+        return;
+      }
+
+
+      codigoJaEnviado = true;
+
+
+      document
         .getElementById(
-          "status"
+          "resultado"
+        )
+        .style.display =
+        "block";
+
+
+      document
+        .getElementById(
+          "resultado"
         )
         .textContent =
-        "Janela principal do WMS não encontrada.";
+        codigo;
 
-      return;
+
+      atualizarStatus(
+        "Código identificado!"
+      );
+
+
+      enviarCodigoParaWMS(
+        codigo
+      );
 
     }
 
 
-    window.opener.postMessage(
+    // ==========================================================
+    // ENVIAR CÓDIGO PARA O WMS
+    // ==========================================================
 
-      {
+    function enviarCodigoParaWMS(
+      codigo
+    ) {
 
-        type:
-          "WMS_BARCODE",
+      if (!window.opener) {
 
-        codigo:
-          codigo
+        atualizarStatus(
+          "Janela principal do WMS não encontrada."
+        );
 
-      },
+        codigoJaEnviado =
+          false;
 
-      targetOrigin
+        return;
 
-    );
-
-
-    pararScanner();
-
-
-    document
-      .getElementById(
-        "status"
-      )
-      .textContent =
-      "Código enviado ao WMS.";
+      }
 
 
-    // Pequeno atraso para permitir
-    // o processamento antes de fechar.
+      try {
 
-    setTimeout(
+        window.opener.postMessage(
+
+          {
+
+            type:
+              "WMS_BARCODE",
+
+            codigo:
+              codigo
+
+          },
+
+          targetOrigin
+
+        );
+
+
+        atualizarStatus(
+          "Código enviado ao WMS."
+        );
+
+
+        pararScanner();
+
+
+        setTimeout(
+          function() {
+
+            window.close();
+
+          },
+          700
+        );
+
+
+      } catch (
+        erro
+      ) {
+
+        console.error(
+          "Erro ao enviar código:",
+          erro
+        );
+
+
+        atualizarStatus(
+          "Erro ao enviar código ao WMS."
+        );
+
+
+        codigoJaEnviado =
+          false;
+
+      }
+
+    }
+
+
+    // ==========================================================
+    // PARAR SCANNER
+    // ==========================================================
+
+    function pararScanner() {
+
+      if (!scanner) {
+        return;
+      }
+
+
+      scanner
+        .stop()
+        .then(
+          function() {
+
+            try {
+
+              scanner.clear();
+
+            } catch (
+              erro
+            ) {
+
+              console.log(
+                "Scanner limpo."
+              );
+
+            }
+
+
+            scannerIniciado =
+              false;
+
+          }
+        )
+        .catch(
+          function(
+            erro
+          ) {
+
+            console.log(
+              "Erro ao parar scanner:",
+              erro
+            );
+
+          }
+        );
+
+    }
+
+
+    // ==========================================================
+    // INICIALIZAÇÃO
+    // ==========================================================
+
+    window.addEventListener(
+      "load",
       function() {
 
-        window.close();
-
-      },
-      500
-    );
-
-  }
-
-
-  // ==========================================================
-  // PARAR SCANNER
-  // ==========================================================
-
-  function pararScanner() {
-
-    if (!scanner) {
-
-      return;
-
-    }
-
-
-    scanner
-      .stop()
-      .then(
-        function() {
-
-          try {
-
-            scanner.clear();
-
-          } catch (
-            erro
-          ) {}
-
-        }
-      )
-      .catch(
-        function(
-          erro
+        if (
+          origemValida()
         ) {
 
-          console.log(
-            erro
+          atualizarStatus(
+            "Scanner pronto."
+          );
+
+        } else {
+
+          atualizarStatus(
+            "Abra este scanner pelo WMS."
           );
 
         }
-      );
 
-  }
+      }
+    );
 
+  </script>
 
-  // ==========================================================
-  // START AUTOMÁTICO
-  // ==========================================================
+</body>
 
-  iniciarScanner();
-
-</script>
+</html>

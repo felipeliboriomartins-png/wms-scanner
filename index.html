@@ -163,7 +163,7 @@
 
 
     // ==========================================================
-    // LÊ O TARGET ORIGIN ENVIADO PELO WMS
+    // LÊ targetOrigin DA URL
     // ==========================================================
 
     const params =
@@ -179,29 +179,39 @@
 
 
     // ==========================================================
-    // VALIDAR ORIGEM DO WMS
+    // VALIDA ORIGEM
     // ==========================================================
 
     function origemValida() {
 
       if (!targetOrigin) {
+
         return false;
+
       }
 
 
       return (
+
+        targetOrigin === "*"
+
+        ||
+
         targetOrigin ===
           "https://script.google.com"
+
         ||
+
         targetOrigin ===
           "https://script.googleusercontent.com"
+
       );
 
     }
 
 
     // ==========================================================
-    // MOSTRAR STATUS
+    // STATUS
     // ==========================================================
 
     function atualizarStatus(
@@ -209,7 +219,9 @@
     ) {
 
       document
-        .getElementById("status")
+        .getElementById(
+          "status"
+        )
         .textContent =
         mensagem;
 
@@ -222,19 +234,25 @@
 
     function iniciarScanner() {
 
-      if (scannerIniciado) {
+      if (
+        scannerIniciado
+      ) {
+
         return;
+
       }
 
 
-      if (!origemValida()) {
+      if (
+        !origemValida()
+      ) {
 
         atualizarStatus(
-          "Origem do WMS não identificada."
+          "Abra este scanner pelo WMS."
         );
 
         console.error(
-          "targetOrigin:",
+          "targetOrigin inválido:",
           targetOrigin
         );
 
@@ -257,6 +275,10 @@
       reader.innerHTML = "";
 
 
+      codigoJaEnviado =
+        false;
+
+
       scanner =
         new Html5Qrcode(
           "reader"
@@ -274,7 +296,8 @@
 
         formatsToSupport: [
 
-          Html5QrcodeSupportedFormats.CODE_128
+          Html5QrcodeSupportedFormats
+            .CODE_128
 
         ]
 
@@ -285,7 +308,8 @@
         .start(
 
           {
-            facingMode: "environment"
+            facingMode:
+              "environment"
           },
 
           config,
@@ -304,8 +328,8 @@
             errorMessage
           ) {
 
-            // Não exibe os erros de leitura
-            // enquanto a câmera está procurando.
+            // Falhas durante a busca
+            // são normais e não serão exibidas.
 
           }
 
@@ -314,7 +338,9 @@
         .then(
           function() {
 
-            scannerIniciado = true;
+            scannerIniciado =
+              true;
+
 
             atualizarStatus(
               "Aponte a câmera para o código."
@@ -328,12 +354,15 @@
             erro
           ) {
 
-            scannerIniciado = false;
+            scannerIniciado =
+              false;
+
 
             console.error(
               "Erro ao iniciar câmera:",
               erro
             );
+
 
             atualizarStatus(
               "Erro ao acessar a câmera."
@@ -353,23 +382,32 @@
       codigo
     ) {
 
-      if (codigoJaEnviado) {
+      if (
+        codigoJaEnviado
+      ) {
+
         return;
+
       }
 
 
       codigo =
-        String(codigo)
-          .trim()
-          .toUpperCase();
+        String(
+          codigo
+        )
+        .trim()
+        .toUpperCase();
 
 
       if (!codigo) {
+
         return;
+
       }
 
 
-      codigoJaEnviado = true;
+      codigoJaEnviado =
+        true;
 
 
       document
@@ -401,21 +439,25 @@
 
 
     // ==========================================================
-    // ENVIAR CÓDIGO PARA O WMS
+    // ENVIAR PARA O WMS
     // ==========================================================
 
     function enviarCodigoParaWMS(
       codigo
     ) {
 
-      if (!window.opener) {
+      if (
+        !window.opener
+      ) {
 
         atualizarStatus(
           "Janela principal do WMS não encontrada."
         );
 
+
         codigoJaEnviado =
           false;
+
 
         return;
 
@@ -489,7 +531,9 @@
     function pararScanner() {
 
       if (!scanner) {
+
         return;
+
       }
 
 

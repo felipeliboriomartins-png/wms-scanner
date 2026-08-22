@@ -84,65 +84,38 @@
         bold;
 
       margin-bottom:
+        10px;
+
+    }
+
+
+    .descricao {
+
+      color:
+        #6b7280;
+
+      line-height:
+        1.4;
+
+      margin-bottom:
+        18px;
+
+    }
+
+
+    .resumo {
+
+      margin-top:
         15px;
 
-    }
-
-
-    .linha {
-
-      display:
-        grid;
-
-      grid-template-columns:
-        1fr 1fr 1fr;
-
-      gap:
+      padding:
         12px;
 
-      margin-bottom:
-        12px;
-
-    }
-
-
-    .campo label {
-
-      display:
-        block;
-
-      font-size:
-        13px;
-
-      font-weight:
-        bold;
-
-      margin-bottom:
-        5px;
-
-    }
-
-
-    .campo input {
-
-      width:
-        100%;
-
-      height:
-        46px;
-
-      border:
-        2px solid
-        #d1d5db;
+      background:
+        #f3f4f6;
 
       border-radius:
-        9px;
-
-      padding:
-        0 10px;
-
-      font-size:
-        16px;
+        10px;
 
     }
 
@@ -153,7 +126,7 @@
         100%;
 
       height:
-        50px;
+        52px;
 
       border:
         none;
@@ -177,7 +150,7 @@
         pointer;
 
       margin-top:
-        8px;
+        10px;
 
     }
 
@@ -208,7 +181,7 @@
         );
 
       gap:
-        15px;
+        14px;
 
     }
 
@@ -222,11 +195,8 @@
         1px solid
         #d1d5db;
 
-      border-radius:
-        10px;
-
       padding:
-        18px;
+        16px;
 
       text-align:
         center;
@@ -246,7 +216,7 @@
         bold;
 
       margin-bottom:
-        8px;
+        5px;
 
     }
 
@@ -254,13 +224,13 @@
     .tipo {
 
       font-size:
-        12px;
+        11px;
 
       color:
         #6b7280;
 
       margin-bottom:
-        8px;
+        6px;
 
     }
 
@@ -268,7 +238,7 @@
     .codigo {
 
       font-size:
-        29px;
+        30px;
 
       font-weight:
         bold;
@@ -277,7 +247,7 @@
         2px;
 
       margin:
-        5px 0 8px;
+        5px 0;
 
     }
 
@@ -288,21 +258,21 @@
         100%;
 
       height:
-        85px;
+        80px;
 
     }
 
 
-    .descricao {
+    .descricao-posicao {
 
       font-size:
         11px;
 
-      margin-top:
-        8px;
-
       color:
         #6b7280;
+
+      margin-top:
+        5px;
 
     }
 
@@ -333,9 +303,6 @@
         max-width:
           none;
 
-        display:
-          grid;
-
         grid-template-columns:
           repeat(
             2,
@@ -354,9 +321,6 @@
           1px solid
           #000;
 
-        border-radius:
-          0;
-
       }
 
     }
@@ -366,14 +330,6 @@
       max-width:
       650px
     ) {
-
-      .linha {
-
-        grid-template-columns:
-          1fr;
-
-      }
-
 
       .etiquetas {
 
@@ -392,152 +348,112 @@
 <body>
 
 
-  <!-- ======================================================
-       CONFIGURAÇÃO
-       ====================================================== -->
+<div
+  class="painel nao-imprimir"
+>
 
-  <div
-    class="painel nao-imprimir"
-  >
+  <div class="titulo">
 
-    <div class="titulo">
-      Gerador de Etiquetas de Posições
-    </div>
-
-
-    <div class="linha">
-
-      <div class="campo">
-
-        <label>
-          Número de ruas
-        </label>
-
-        <input
-          id="ruas"
-          type="number"
-          value="6"
-          min="1"
-        >
-
-      </div>
-
-
-      <div class="campo">
-
-        <label>
-          Número de colunas
-        </label>
-
-        <input
-          id="colunas"
-          type="number"
-          value="12"
-          min="1"
-        >
-
-      </div>
-
-
-      <div class="campo">
-
-        <label>
-          Número de níveis
-        </label>
-
-        <input
-          id="niveis"
-          type="number"
-          value="4"
-          min="1"
-        >
-
-      </div>
-
-    </div>
-
-
-    <button
-      class="botao"
-      onclick="gerarPosicoes()"
-    >
-      GERAR 288 ETIQUETAS
-    </button>
-
-
-    <button
-      class="botao preto"
-      onclick="window.print()"
-    >
-      IMPRIMIR ETIQUETAS
-    </button>
+    Etiquetas de Posições
 
   </div>
 
 
-  <!-- ======================================================
-       ETIQUETAS
-       ====================================================== -->
+  <div class="descricao">
+
+    Gera as 288 posições físicas do WMS.
+
+    <br><br>
+
+    Formato:
+
+    <strong>
+      RUA + COLUNA + NÍVEL
+    </strong>
+
+    <br>
+
+    Exemplo:
+
+    <strong>
+      B05-03
+    </strong>
+
+    = Rua B / Coluna 05 / Nível 03.
+
+  </div>
+
 
   <div
-    id="etiquetas"
-    class="etiquetas"
-  ></div>
+    id="resumo"
+    class="resumo"
+  >
+
+    6 ruas × 12 colunas × 4 níveis =
+
+    <strong>
+      288 posições
+    </strong>
+
+  </div>
+
+
+  <button
+    class="botao"
+    onclick="gerarPosicoes()"
+  >
+
+    GERAR ETIQUETAS
+
+  </button>
+
+
+  <button
+    class="botao preto"
+    onclick="window.print()"
+  >
+
+    IMPRIMIR ETIQUETAS
+
+  </button>
+
+</div>
+
+
+<div
+  id="etiquetas"
+  class="etiquetas"
+></div>
 
 
 <script>
 
 
 /* ==========================================================
-   GERAR POSIÇÕES
+   CONFIGURAÇÃO
+   ========================================================== */
+
+const RUAS = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F"
+];
+
+
+const COLUNAS = 12;
+
+
+const NIVEIS = 4;
+
+
+/* ==========================================================
+   GERAR
    ========================================================== */
 
 function gerarPosicoes() {
-
-  const ruas =
-    Number(
-      document
-        .getElementById(
-          "ruas"
-        )
-        .value
-    );
-
-
-  const colunas =
-    Number(
-      document
-        .getElementById(
-          "colunas"
-        )
-        .value
-    );
-
-
-  const niveis =
-    Number(
-      document
-        .getElementById(
-          "niveis"
-        )
-        .value
-    );
-
-
-  if (
-    ruas <= 0 ||
-    colunas <= 0 ||
-    niveis <= 0
-  ) {
-
-    alert(
-      "Informe valores válidos."
-    );
-
-    return;
-
-  }
-
 
   const container =
     document
@@ -554,176 +470,175 @@ function gerarPosicoes() {
     0;
 
 
-  for (
-    let rua = 1;
-    rua <= ruas;
-    rua++
-  ) {
-
-
-    for (
-      let coluna = 1;
-      coluna <= colunas;
-      coluna++
+  RUAS.forEach(
+    function(
+      rua
     ) {
 
 
       for (
-        let nivel = 1;
-        nivel <= niveis;
-        nivel++
+        let coluna = 1;
+        coluna <= COLUNAS;
+        coluna++
       ) {
 
 
-        contador++;
+        for (
+          let nivel = 1;
+          nivel <= NIVEIS;
+          nivel++
+        ) {
 
 
-        const codigo =
-
-          "A" +
-
-          String(
-            rua
-          )
-          .padStart(
-            2,
-            "0"
-          ) +
-
-          "-" +
-
-          String(
-            coluna
-          )
-          .padStart(
-            2,
-            "0"
-          );
+          contador++;
 
 
-        /* ====================================================
-           CRIA ETIQUETA
-           ==================================================== */
+          const codigo =
 
-        const etiqueta =
-          document
-            .createElement(
-              "div"
-            );
-
-
-        etiqueta.className =
-          "etiqueta";
-
-
-        etiqueta.innerHTML =
-
-          '<div class="empresa">' +
-            'SABOR DE FRANCE' +
-          '</div>' +
-
-          '<div class="tipo">' +
-            'POSIÇÃO DE ESTOQUE' +
-          '</div>' +
-
-          '<div class="codigo">' +
-            codigo +
-          '</div>' +
-
-          '<svg class="barcode"></svg>' +
-
-          '<div class="descricao">' +
-            'RUA ' +
-            String(
-              rua
-            ).padStart(
-              2,
-              "0"
-            ) +
-
-            ' • COLUNA ' +
+            rua +
 
             String(
               coluna
-            ).padStart(
+            )
+            .padStart(
               2,
               "0"
             ) +
 
-            ' • NÍVEL ' +
+            "-" +
 
-            nivel +
-
-          '</div>';
-
-
-        container.appendChild(
-          etiqueta
-        );
-
-
-        /* ====================================================
-           GERA CODE 128
-           ==================================================== */
-
-        const svg =
-          etiqueta
-            .querySelector(
-              ".barcode"
+            String(
+              nivel
+            )
+            .padStart(
+              2,
+              "0"
             );
 
 
-        JsBarcode(
-          svg,
-          codigo,
-          {
+          const etiqueta =
+            document
+              .createElement(
+                "div"
+              );
 
-            format:
-              "CODE128",
 
-            displayValue:
-              true,
+          etiqueta.className =
+            "etiqueta";
 
-            text:
-              codigo,
 
-            fontSize:
-              15,
+          etiqueta.innerHTML =
 
-            height:
-              70,
+            '<div class="empresa">' +
 
-            width:
-              2,
+              'SABOR DE FRANCE' +
 
-            margin:
-              5
+            '</div>' +
 
-          }
-        );
+            '<div class="tipo">' +
+
+              'POSIÇÃO DE ESTOQUE' +
+
+            '</div>' +
+
+            '<div class="codigo">' +
+
+              codigo +
+
+            '</div>' +
+
+            '<svg class="barcode"></svg>' +
+
+            '<div class="descricao-posicao">' +
+
+              'Rua ' +
+              rua +
+
+              ' • Coluna ' +
+              String(
+                coluna
+              )
+              .padStart(
+                2,
+                "0"
+              ) +
+
+              ' • Nível ' +
+              String(
+                nivel
+              )
+              .padStart(
+                2,
+                "0"
+              ) +
+
+            '</div>';
+
+
+          container.appendChild(
+            etiqueta
+          );
+
+
+          const svg =
+            etiqueta
+              .querySelector(
+                ".barcode"
+              );
+
+
+          JsBarcode(
+            svg,
+            codigo,
+            {
+
+              format:
+                "CODE128",
+
+              displayValue:
+                true,
+
+              text:
+                codigo,
+
+              fontSize:
+                15,
+
+              height:
+                70,
+
+              width:
+                2,
+
+              margin:
+                5
+
+            }
+          );
+
+        }
 
       }
 
     }
-
-  }
-
-
-  document.title =
-    "Posições WMS - " +
-    contador;
-
-
-  console.log(
-    "Etiquetas geradas:",
-    contador
   );
+
+
+  document
+    .getElementById(
+      "resumo"
+    )
+    .innerHTML =
+
+      contador +
+      " posições geradas.";
+
 
 }
 
 
 /* ==========================================================
-   GERAR AUTOMATICAMENTE
+   INICIAR
    ========================================================== */
 
 window.addEventListener(

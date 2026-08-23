@@ -69,7 +69,7 @@
     .campo {
 
       margin-bottom:
-        12px;
+        10px;
 
     }
 
@@ -97,7 +97,7 @@
         100%;
 
       height:
-        45px;
+        44px;
 
       border:
         2px solid
@@ -110,7 +110,7 @@
         0 10px;
 
       font-size:
-        16px;
+        15px;
 
     }
 
@@ -320,7 +320,6 @@
 
     <input
       id="codigo"
-      placeholder="PL000010"
     >
 
   </div>
@@ -426,9 +425,7 @@
   <div
     id="codigoVisual"
     class="codigo"
-  >
-    PL000010
-  </div>
+  ></div>
 
 
   <svg
@@ -440,72 +437,47 @@
   <div class="info">
 
     <div class="linha">
-
-      <span>
-        Produto:
-      </span>
-
+      <span>Produto:</span>
       <span
         id="produtoVisual"
         class="valor"
       ></span>
-
     </div>
 
 
     <div class="linha">
-
-      <span>
-        SKU:
-      </span>
-
+      <span>SKU:</span>
       <span
         id="skuVisual"
         class="valor"
       ></span>
-
     </div>
 
 
     <div class="linha">
-
-      <span>
-        Lote:
-      </span>
-
+      <span>Lote:</span>
       <span
         id="loteVisual"
         class="valor"
       ></span>
-
     </div>
 
 
     <div class="linha">
-
-      <span>
-        Quantidade:
-      </span>
-
+      <span>Quantidade:</span>
       <span
         id="quantidadeVisual"
         class="valor"
       ></span>
-
     </div>
 
 
     <div class="linha">
-
-      <span>
-        Peso:
-      </span>
-
+      <span>Peso:</span>
       <span
         id="pesoVisual"
         class="valor"
       ></span>
-
     </div>
 
   </div>
@@ -515,26 +487,54 @@
 
 <script>
 
-
-/* ==========================================================
-   PARÂMETROS DA URL
-   ========================================================== */
-
 const params =
   new URLSearchParams(
     window.location.search
   );
 
 
-const codigoURL =
-  params.get(
-    "codigo"
+function preencher() {
+
+  const campos = [
+    "codigo",
+    "produto",
+    "sku",
+    "lote",
+    "quantidade",
+    "peso"
+  ];
+
+
+  campos.forEach(
+    function(nome) {
+
+      const valor =
+        params.get(
+          nome
+        );
+
+
+      if (
+        valor !== null
+      ) {
+
+        document
+          .getElementById(
+            nome
+          )
+          .value =
+          valor;
+
+      }
+
+    }
   );
 
 
-/* ==========================================================
-   GERAR
-   ========================================================== */
+  gerarEtiqueta();
+
+}
+
 
 function gerarEtiqueta() {
 
@@ -548,58 +548,7 @@ function gerarEtiqueta() {
       .toUpperCase();
 
 
-  const produto =
-    document
-      .getElementById(
-        "produto"
-      )
-      .value
-      .trim();
-
-
-  const sku =
-    document
-      .getElementById(
-        "sku"
-      )
-      .value
-      .trim();
-
-
-  const lote =
-    document
-      .getElementById(
-        "lote"
-      )
-      .value
-      .trim();
-
-
-  const quantidade =
-    document
-      .getElementById(
-        "quantidade"
-      )
-      .value
-      .trim();
-
-
-  const peso =
-    document
-      .getElementById(
-        "peso"
-      )
-      .value
-      .trim();
-
-
-  if (
-    !codigo
-  ) {
-
-    alert(
-      "Informe o código do pallet."
-    );
+  if (!codigo) {
 
     return;
 
@@ -619,7 +568,11 @@ function gerarEtiqueta() {
       "produtoVisual"
     )
     .textContent =
-    produto;
+    document
+      .getElementById(
+        "produto"
+      )
+      .value;
 
 
   document
@@ -627,7 +580,11 @@ function gerarEtiqueta() {
       "skuVisual"
     )
     .textContent =
-    sku;
+    document
+      .getElementById(
+        "sku"
+      )
+      .value;
 
 
   document
@@ -635,7 +592,11 @@ function gerarEtiqueta() {
       "loteVisual"
     )
     .textContent =
-    lote;
+    document
+      .getElementById(
+        "lote"
+      )
+      .value;
 
 
   document
@@ -643,7 +604,11 @@ function gerarEtiqueta() {
       "quantidadeVisual"
     )
     .textContent =
-    quantidade;
+    document
+      .getElementById(
+        "quantidade"
+      )
+      .value;
 
 
   document
@@ -651,15 +616,16 @@ function gerarEtiqueta() {
       "pesoVisual"
     )
     .textContent =
-    peso;
+    document
+      .getElementById(
+        "peso"
+      )
+      .value;
 
 
   JsBarcode(
-
     "#barcode",
-
     codigo,
-
     {
 
       format:
@@ -687,37 +653,14 @@ function gerarEtiqueta() {
         10
 
     }
-
   );
 
 }
 
 
-/* ==========================================================
-   ABRIR
-   ========================================================== */
-
 window.addEventListener(
   "load",
-  function() {
-
-    if (
-      codigoURL
-    ) {
-
-      document
-        .getElementById(
-          "codigo"
-        )
-        .value =
-        codigoURL;
-
-    }
-
-
-    gerarEtiqueta();
-
-  }
+  preencher
 );
 
 </script>
